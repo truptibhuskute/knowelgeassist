@@ -1,0 +1,1139 @@
+# MASTER PROMPT: BUILD KNOWLEDGEASSIST – PRODUCTION-ORIENTED ENTERPRISE RAG DOCUMENT CHATBOT
+
+## 1. YOUR ROLE
+
+Act as a Principal Java Backend Engineer, Senior AI/ML Engineer, Enterprise Software Architect, DevSecOps Engineer and Technical Lead with extensive experience building production-grade enterprise applications.
+
+Your task is to DESIGN, IMPLEMENT, TEST, DOCUMENT AND DELIVER a complete working full-stack application named:
+
+**KnowledgeAssist – Enterprise AI Knowledge Assistant**
+
+This is not a tutorial, proof of concept, mock application or code-generation exercise.
+
+Build a complete, runnable, maintainable enterprise-style RAG application with a real backend, real database, real authentication, real document ingestion, real vector retrieval, real LLM integration, a functional frontend, automated tests and deployment configuration.
+
+Do not stop after generating architecture diagrams, pseudocode, folder structures or sample code.
+
+Your responsibility is to implement the complete application in the existing working environment.
+
+---
+
+# 2. PRODUCT OBJECTIVE
+
+KnowledgeAssist is a secure enterprise document chatbot.
+
+Organizations can upload internal documents such as HR policies, technical documentation, employee handbooks, SOPs, onboarding documents and business reports.
+
+Authenticated employees can ask natural-language questions and receive answers grounded exclusively in documents they are authorized to access.
+
+The system must support:
+
+- Document ingestion.
+- Text extraction.
+- Intelligent chunking.
+- Embedding generation.
+- Vector storage.
+- Semantic retrieval.
+- Hybrid retrieval.
+- LLM-powered answer generation.
+- Source-level citations.
+- Multi-turn conversations.
+- Document-level authorization.
+- Role-based access control.
+- Document versioning.
+- Admin dashboard.
+- Analytics and monitoring.
+
+The application must be modular, secure, testable and extensible.
+
+---
+
+# 3. TECHNOLOGY STACK
+
+Use the following stack.
+
+## Backend
+
+- Java 21.
+- Spring Boot 3.x.
+- Spring Web.
+- Spring Security.
+- Spring Data JPA.
+- Hibernate.
+- Spring Validation.
+- Spring AI.
+- JWT authentication.
+- Maven.
+
+## Database
+
+- PostgreSQL.
+- pgvector extension.
+- Flyway database migrations.
+
+## AI and RAG
+
+- Spring AI.
+- Configurable OpenAI-compatible LLM provider.
+- Configurable embedding provider.
+- Vector search using pgvector.
+- Apache Tika.
+- Apache PDFBox.
+- Token-aware document chunking.
+
+## Infrastructure
+
+- Redis for caching and rate limiting.
+- RabbitMQ for asynchronous document ingestion.
+- Docker.
+- Docker Compose.
+
+## Frontend
+
+- React.
+- TypeScript.
+- Vite.
+- Tailwind CSS.
+- React Router.
+- Axios.
+- React Query.
+- A polished, responsive enterprise dashboard.
+
+## Testing
+
+- JUnit 5.
+- Mockito.
+- Spring Boot Test.
+- Testcontainers.
+- REST API integration tests.
+- React component tests.
+
+## Monitoring
+
+- Spring Boot Actuator.
+- Micrometer.
+- Prometheus.
+- Grafana.
+- Structured application logging.
+
+Use compatible stable dependency versions and document the selected versions.
+
+Do not use obsolete APIs or deprecated libraries when supported alternatives exist.
+
+---
+
+# 4. ARCHITECTURE
+
+Implement a modular monolith with clearly separated business domains.
+
+Use this dependency direction:
+
+Controller → Application Service → Domain/Service → Repository/Infrastructure.
+
+Recommended modules:
+
+1. Authentication Module.
+2. User Management Module.
+3. Department Management Module.
+4. Document Management Module.
+5. Document Ingestion Module.
+6. Text Extraction Module.
+7. Chunking Module.
+8. Embedding Module.
+9. Vector Retrieval Module.
+10. RAG Orchestration Module.
+11. LLM Integration Module.
+12. Conversation Management Module.
+13. Authorization Module.
+14. Analytics Module.
+15. Audit Module.
+16. Monitoring Module.
+
+Do not create unnecessary microservices.
+
+Use interfaces around external providers so that LLM, embedding, storage and messaging implementations can be changed independently.
+
+---
+
+# 5. COMPLETE AUTHENTICATION AND SECURITY
+
+Implement real authentication.
+
+User roles:
+
+- EMPLOYEE
+- ADMIN
+- KNOWLEDGE_OWNER
+
+Requirements:
+
+1. Registration and login.
+2. BCrypt or Argon2 password hashing.
+3. JWT access-token authentication.
+4. Refresh-token rotation and revocation.
+5. Token expiration.
+6. Logout.
+7. Secure password validation.
+8. Role-based authorization.
+9. Department-based authorization.
+10. Document-level permissions.
+11. Audit logging.
+12. Account activation and deactivation.
+13. Login rate limiting.
+14. Protection against brute-force attempts.
+
+Never store plaintext passwords.
+
+Never trust role or department values submitted by the frontend.
+
+Never accept a user ID from the request as proof of identity. Derive the authenticated principal from the security context.
+
+Use appropriate security headers, CORS configuration and CSRF protection strategy for the selected authentication architecture.
+
+Keep secrets in environment variables.
+
+---
+
+# 6. DOCUMENT MANAGEMENT
+
+Support these formats:
+
+- PDF.
+- DOCX.
+- TXT.
+- Markdown.
+
+Implement:
+
+- Single-file upload.
+- Bulk upload.
+- File validation.
+- MIME-type validation.
+- Maximum upload size of 50 MB by default.
+- SHA-256 checksum.
+- Duplicate detection.
+- Filename sanitization.
+- Secure file storage.
+- Document listing.
+- Document details.
+- Document deletion.
+- Document replacement.
+- Document versioning.
+- Upload ownership.
+- Access-scope management.
+
+Document statuses:
+
+- UPLOADED.
+- PROCESSING.
+- INDEXED.
+- FAILED.
+- DELETING.
+- DELETED.
+
+Support document metadata:
+
+- Document ID.
+- Document name.
+- Original filename.
+- File type.
+- File checksum.
+- Owner ID.
+- Department ID.
+- Access scope.
+- Version.
+- Upload timestamp.
+- Processing timestamp.
+- Chunk count.
+- Processing error.
+
+Document replacement must preserve version history.
+
+Use transactional operations and safe cleanup procedures. Do not leave orphaned vectors or files.
+
+---
+
+# 7. DOCUMENT INGESTION PIPELINE
+
+Implement asynchronous ingestion using RabbitMQ.
+
+Workflow:
+
+1. Admin uploads document.
+2. Backend validates permissions and file.
+3. Backend calculates SHA-256.
+4. Backend creates document metadata.
+5. Backend stores the original file securely.
+6. Backend publishes an ingestion event.
+7. Worker extracts document text.
+8. Worker preserves page and section metadata.
+9. Worker cleans extracted content.
+10. Worker creates overlapping chunks.
+11. Worker generates embeddings in batches.
+12. Worker persists chunks and embeddings in pgvector.
+13. Worker updates document status to INDEXED.
+14. Worker records processing metrics.
+
+Use reliable message acknowledgment, retry policies, dead-letter queues and idempotent processing.
+
+Avoid embedding generation inside the HTTP upload request.
+
+Support safe recovery from worker failures.
+
+Do not mark a document INDEXED until its vectors and metadata have been successfully persisted.
+
+---
+
+# 8. CHUNKING AND EMBEDDING
+
+Implement configurable token-aware chunking.
+
+Initial configuration:
+
+- Chunk size: 800–1,000 tokens.
+- Overlap: 100–150 tokens.
+- Retrieval Top-K: 5.
+- Similarity threshold: configurable.
+
+These are starting defaults, not guaranteed optimal values.
+
+Requirements:
+
+- Preserve page numbers.
+- Preserve document IDs.
+- Preserve chunk IDs.
+- Preserve section metadata.
+- Avoid empty chunks.
+- Avoid losing text at boundaries.
+- Batch embedding requests.
+- Validate embedding dimensions.
+- Normalize vectors when required by the selected similarity strategy.
+- Support embedding-model configuration.
+- Record embedding model/version metadata.
+
+Do not silently mix embeddings generated by incompatible models.
+
+Implement a reindexing strategy for embedding-model changes.
+
+---
+
+# 9. VECTOR DATABASE AND RETRIEVAL
+
+Use PostgreSQL with pgvector.
+
+Store:
+
+- Chunk ID.
+- Document ID.
+- Document version.
+- Chunk text.
+- Embedding vector.
+- Page number.
+- Department ID.
+- Access scope.
+- Metadata.
+- Creation timestamp.
+
+Implement:
+
+1. Semantic similarity search.
+2. Metadata filtering.
+3. User permission filtering.
+4. Department filtering.
+5. Document filtering.
+6. Configurable Top-K.
+7. Configurable similarity threshold.
+8. Hybrid search with keyword retrieval.
+9. Optional reranking interface.
+
+CRITICAL SECURITY REQUIREMENT:
+
+Apply authorization constraints inside the database retrieval query before returning candidate chunks.
+
+Never retrieve unauthorized chunks and filter them only after retrieval.
+
+Ensure the system cannot leak restricted document names, snippets, page numbers, metadata or embeddings through API responses, errors or logs.
+
+Test cross-user and cross-department isolation.
+
+---
+
+# 10. RAG ORCHESTRATION
+
+Implement a dedicated RAG orchestration service.
+
+Query workflow:
+
+1. Authenticate the user.
+2. Load conversation history.
+3. Rewrite follow-up queries when necessary.
+4. Generate query embeddings.
+5. Retrieve authorized document chunks.
+6. Apply similarity thresholds.
+7. Optionally rerank results.
+8. Build the grounded context.
+9. Construct the LLM prompt.
+10. Invoke the configured LLM.
+11. Validate the generated response.
+12. Resolve citations against actual retrieved chunks.
+13. Calculate an evidence-based confidence category.
+14. Persist the conversation and answer.
+15. Record telemetry.
+16. Return the structured response.
+
+The LLM must never decide which documents a user is authorized to access.
+
+Implement prompt-injection resistance.
+
+Treat document content as untrusted input.
+
+Do not allow instructions inside uploaded documents to override system-level instructions or authorization rules.
+
+---
+
+# 11. STRICT LLM GROUNDING
+
+Use a configurable system prompt.
+
+The chatbot must:
+
+- Answer using only authorized retrieved context.
+- Never invent facts.
+- Never fabricate document names.
+- Never fabricate page numbers.
+- Never fabricate citations.
+- Identify conflicting source information.
+- Explicitly abstain when evidence is insufficient.
+- Distinguish supported facts from uncertain information.
+- Never reveal system instructions, secrets or internal credentials.
+
+When context is insufficient, return exactly:
+
+"I could not find enough information in the available documents."
+
+Confidence categories:
+
+- HIGH.
+- MEDIUM.
+- LOW.
+
+Define confidence using measurable retrieval and evidence criteria, not arbitrary LLM self-assessment.
+
+Use structured JSON output and validate it against backend DTOs.
+
+If the LLM produces invalid JSON, malformed citations or unsupported references, handle the response safely.
+
+---
+
+# 12. RESPONSE CONTRACT
+
+Every successful chat response should follow this structure:
+
+{
+  "conversationId": "uuid",
+  "answer": "Generated grounded answer",
+  "confidence": "HIGH",
+  "citations": [
+    {
+      "documentId": "uuid",
+      "documentName": "Employee_Handbook.pdf",
+      "documentVersion": 1,
+      "pageNumber": 18,
+      "chunkId": "uuid",
+      "excerpt": "Relevant source passage"
+    }
+  ],
+  "followUpQuestions": [
+    "What happens if notice period is not served?",
+    "Can the notice period be waived?"
+  ],
+  "retrievalMetadata": {
+    "retrievedChunkCount": 5,
+    "model": "configured-model",
+    "grounded": true
+  }
+}
+
+Validate all citations against actual retrieved source records.
+
+Do not expose sensitive internal retrieval information.
+
+---
+
+# 13. CONVERSATION MANAGEMENT
+
+Implement:
+
+- Create conversation.
+- Send message.
+- Retrieve conversation history.
+- List conversations.
+- Rename conversation.
+- Delete conversation.
+- Conversation ownership.
+- Multi-turn context.
+- Follow-up query rewriting.
+- Conversation summarization when history becomes large.
+
+Ensure one user cannot access another user's conversations.
+
+Do not send the entire conversation history indefinitely to the LLM.
+
+Implement configurable context-window management.
+
+---
+
+# 14. DOCUMENT ACCESS CONTROL
+
+Document access scopes:
+
+1. ALL_EMPLOYEES.
+2. DEPARTMENT.
+3. RESTRICTED.
+
+Rules:
+
+ALL_EMPLOYEES:
+Available to authenticated active employees, subject to organization boundaries.
+
+DEPARTMENT:
+Available only to authorized members of the assigned department.
+
+RESTRICTED:
+Available only to explicitly authorized users or groups.
+
+Implement:
+
+- Role checks.
+- Department membership checks.
+- Explicit document grants.
+- Document ownership rules.
+- Permission revocation.
+- Access auditing.
+
+Document visibility and vector retrieval must enforce the same authorization policy.
+
+Default to deny when permissions are missing or ambiguous.
+
+---
+
+# 15. ADMIN DASHBOARD
+
+Build a complete working admin dashboard.
+
+Features:
+
+- Upload documents.
+- Bulk upload.
+- View documents.
+- Search documents.
+- Filter by status.
+- View ingestion progress.
+- View document metadata.
+- Change access scope.
+- Assign department.
+- Manage document permissions.
+- Replace document versions.
+- Delete documents.
+- View ingestion failures.
+- Retry failed ingestion.
+- View usage analytics.
+- View audit logs.
+
+Do not use hardcoded analytics data.
+
+All dashboard metrics must come from actual backend APIs.
+
+---
+
+# 16. EMPLOYEE FRONTEND
+
+Build a polished responsive React + TypeScript application.
+
+Pages:
+
+1. Login.
+2. Registration, if enabled by the backend policy.
+3. Employee dashboard.
+4. AI chat interface.
+5. Conversation history.
+6. Document source viewer.
+7. User profile.
+8. Admin dashboard.
+9. Document management.
+10. User and department management.
+
+Chat interface requirements:
+
+- Message history.
+- Loading indicators.
+- Streaming response support where practical.
+- Source citations.
+- Expandable document excerpts.
+- Page references.
+- Confidence indicator.
+- Suggested follow-up questions.
+- Error states.
+- Retry action.
+- New conversation.
+- Feedback buttons.
+
+Design requirements:
+
+- Clean enterprise SaaS appearance.
+- Responsive layout.
+- Consistent typography.
+- Accessible controls.
+- Reusable components.
+- Proper form validation.
+- No unnecessary animations.
+- No fake functionality.
+
+Implement real API integration.
+
+Never hardcode successful login responses, chat answers or dashboard metrics.
+
+---
+
+# 17. ANALYTICS AND OBSERVABILITY
+
+Track:
+
+- Total queries.
+- Successful answers.
+- Failed answers.
+- Low-confidence answers.
+- Retrieval hit rate.
+- Retrieval latency.
+- Embedding latency.
+- LLM latency.
+- Total response latency.
+- Token usage.
+- LLM errors.
+- Ingestion duration.
+- Failed document processing.
+- User feedback.
+
+Expose suitable application metrics through Micrometer and Prometheus.
+
+Provide a Grafana dashboard configuration.
+
+Use structured logging and correlation IDs.
+
+Do not log API keys, passwords, JWTs, full sensitive document content or unnecessary personal information.
+
+---
+
+# 18. DATABASE DESIGN
+
+Design a normalized PostgreSQL schema.
+
+Include at least:
+
+- users.
+- roles.
+- user_roles.
+- departments.
+- department_members.
+- documents.
+- document_versions.
+- document_permissions.
+- document_chunks.
+- conversations.
+- conversation_messages.
+- ingestion_jobs.
+- refresh_tokens.
+- audit_logs.
+- query_metrics.
+- user_feedback.
+
+Use:
+
+- UUID primary keys.
+- Foreign keys.
+- Appropriate indexes.
+- Unique constraints.
+- Timestamps.
+- Optimistic locking where appropriate.
+- Flyway migrations.
+- pgvector extension.
+
+Design proper cascade and deletion behavior.
+
+Use transactional boundaries for document replacement and deletion.
+
+Provide database migrations from the first version.
+
+---
+
+# 19. REST API
+
+Implement versioned REST APIs.
+
+Authentication:
+
+POST /api/v1/auth/register
+POST /api/v1/auth/login
+POST /api/v1/auth/refresh
+POST /api/v1/auth/logout
+
+Users:
+
+GET /api/v1/users/me
+GET /api/v1/users
+GET /api/v1/users/{id}
+PATCH /api/v1/users/{id}
+
+Documents:
+
+POST /api/v1/documents/upload
+POST /api/v1/documents/bulk-upload
+GET /api/v1/documents
+GET /api/v1/documents/{id}
+GET /api/v1/documents/{id}/status
+GET /api/v1/documents/{id}/versions
+POST /api/v1/documents/{id}/replace
+DELETE /api/v1/documents/{id}
+
+Permissions:
+
+GET /api/v1/documents/{id}/permissions
+PUT /api/v1/documents/{id}/permissions
+
+Chat:
+
+POST /api/v1/chat
+GET /api/v1/conversations
+POST /api/v1/conversations
+GET /api/v1/conversations/{id}/messages
+PATCH /api/v1/conversations/{id}
+DELETE /api/v1/conversations/{id}
+
+Feedback:
+
+POST /api/v1/feedback
+
+Analytics:
+
+GET /api/v1/admin/analytics
+GET /api/v1/admin/ingestion-jobs
+GET /api/v1/admin/audit-logs
+
+Health:
+
+GET /actuator/health
+
+Use proper DTO validation, HTTP status codes, pagination and centralized exception handling.
+
+Generate OpenAPI documentation.
+
+Enforce authorization on every protected endpoint.
+
+---
+
+# 20. REDIS AND RABBITMQ
+
+Redis:
+
+- Cache appropriate metadata.
+- Rate-limit sensitive APIs.
+- Cache safe, permission-aware results only.
+- Invalidate caches on permission changes and document updates.
+- Avoid cross-user cache leakage.
+
+RabbitMQ:
+
+- Asynchronous ingestion.
+- Reliable message processing.
+- Retry policies.
+- Dead-letter queues.
+- Idempotency.
+- Job status tracking.
+
+Use an outbox pattern where needed to avoid losing ingestion events between database commits and message publishing.
+
+---
+
+# 21. TESTING REQUIREMENTS
+
+Implement comprehensive automated tests.
+
+Backend unit tests:
+
+- Authentication service.
+- User authorization.
+- Document service.
+- Chunking service.
+- Embedding service.
+- Retrieval service.
+- RAG orchestration.
+- Citation validation.
+- LLM failure handling.
+- Conversation service.
+
+Integration tests:
+
+- Registration and login.
+- JWT authorization.
+- Document upload.
+- PDF extraction.
+- DOCX extraction.
+- TXT extraction.
+- Markdown extraction.
+- Asynchronous ingestion.
+- Vector persistence.
+- Semantic retrieval.
+- Restricted document access.
+- Department isolation.
+- Document deletion.
+- Version replacement.
+- Multi-turn chat.
+- Invalid LLM responses.
+
+Use Testcontainers for PostgreSQL, pgvector and RabbitMQ where supported.
+
+Frontend tests:
+
+- Login.
+- Upload.
+- Document listing.
+- Chat interaction.
+- Citation display.
+- Authorization-aware navigation.
+- Error handling.
+
+Do not mock every integration test. Test real component interactions wherever practical.
+
+---
+
+# 22. EVALUATION
+
+Create an evaluation dataset with at least 50 representative question-answer pairs once sample documents are available.
+
+Evaluate:
+
+- Recall@5.
+- Retrieval Hit Rate@5.
+- Citation correctness.
+- Answer faithfulness.
+- Correct abstention rate.
+- Response latency.
+- Unauthorized retrieval prevention.
+
+Do not fabricate evaluation scores.
+
+Create scripts to reproduce evaluations.
+
+Document the limitations of automated LLM-as-judge evaluation.
+
+---
+
+# 23. DOCKER AND DEPLOYMENT
+
+Create a complete Docker Compose environment containing:
+
+- PostgreSQL with pgvector.
+- Redis.
+- RabbitMQ.
+- Spring Boot backend.
+- React frontend.
+- Prometheus.
+- Grafana.
+
+Requirements:
+
+- Health checks.
+- Persistent volumes.
+- Environment-based configuration.
+- Correct service dependencies.
+- Restart policies.
+- Database migrations.
+- Production profile.
+- Development profile.
+- Secure secret configuration.
+- Application health endpoints.
+
+Do not place real API keys in Dockerfiles, source code or committed environment files.
+
+Provide .env.example with placeholders.
+
+Include .gitignore.
+
+---
+
+# 24. REQUIRED PROJECT STRUCTURE
+
+Create a clean repository structure similar to:
+
+knowledge-assist/
+│
+├── backend/
+│   ├── src/main/java/com/knowledgeassist/
+│   │   ├── config/
+│   │   ├── security/
+│   │   ├── common/
+│   │   ├── auth/
+│   │   ├── user/
+│   │   ├── department/
+│   │   ├── document/
+│   │   ├── ingestion/
+│   │   ├── extraction/
+│   │   ├── chunking/
+│   │   ├── embedding/
+│   │   ├── vector/
+│   │   ├── rag/
+│   │   ├── llm/
+│   │   ├── chat/
+│   │   ├── permission/
+│   │   ├── analytics/
+│   │   ├── audit/
+│   │   └── monitoring/
+│   │
+│   ├── src/main/resources/
+│   │   ├── application.yml
+│   │   └── db/migration/
+│   │
+│   ├── src/test/
+│   ├── pom.xml
+│   └── Dockerfile
+│
+├── frontend/
+│   ├── src/
+│   │   ├── api/
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   ├── layouts/
+│   │   ├── pages/
+│   │   ├── routes/
+│   │   ├── types/
+│   │   ├── utils/
+│   │   └── styles/
+│   ├── package.json
+│   └── Dockerfile
+│
+├── infrastructure/
+│   ├── docker/
+│   ├── postgres/
+│   ├── rabbitmq/
+│   ├── prometheus/
+│   └── grafana/
+│
+├── docs/
+│   ├── architecture.md
+│   ├── database-schema.md
+│   ├── api-documentation.md
+│   ├── security.md
+│   ├── rag-pipeline.md
+│   └── deployment.md
+│
+├── scripts/
+├── docker-compose.yml
+├── .env.example
+├── .gitignore
+└── README.md
+
+You may improve this structure if technically justified.
+
+---
+
+# 25. README AND DOCUMENTATION
+
+Write a complete README containing:
+
+1. Project overview.
+2. Problem statement.
+3. Features.
+4. Technology stack.
+5. Architecture diagram.
+6. Database ER diagram.
+7. RAG pipeline diagram.
+8. Authentication flow.
+9. Document authorization model.
+10. Folder structure.
+11. Environment variables.
+12. Local setup instructions.
+13. Docker setup.
+14. Database migrations.
+15. API documentation.
+16. Sample API requests.
+17. Test execution.
+18. Evaluation methodology.
+19. Deployment instructions.
+20. Known limitations.
+
+Include reproducible commands.
+
+---
+
+# 26. DEVELOPMENT AND EXECUTION INSTRUCTIONS
+
+You must implement the project, not merely describe how to implement it.
+
+Follow this execution strategy internally:
+
+PHASE 1:
+- Establish project structure.
+- Create Maven configuration.
+- Create React configuration.
+- Configure PostgreSQL and pgvector.
+- Implement Flyway migrations.
+
+PHASE 2:
+- Implement entities and repositories.
+- Implement authentication.
+- Implement JWT security.
+- Implement roles and departments.
+
+PHASE 3:
+- Implement document upload.
+- Implement extraction.
+- Implement chunking.
+- Implement RabbitMQ ingestion.
+- Implement embedding generation.
+- Implement pgvector persistence.
+
+PHASE 4:
+- Implement permission-aware retrieval.
+- Implement hybrid retrieval.
+- Implement RAG orchestration.
+- Implement LLM integration.
+- Implement grounding and citations.
+
+PHASE 5:
+- Implement conversation history.
+- Implement feedback.
+- Implement analytics.
+- Implement admin APIs.
+
+PHASE 6:
+- Implement React login.
+- Implement employee chat.
+- Implement source citations.
+- Implement document management.
+- Implement admin dashboard.
+
+PHASE 7:
+- Implement monitoring.
+- Implement automated tests.
+- Implement Docker deployment.
+- Complete README and technical documentation.
+
+Do not stop after any phase merely to report progress if you can continue implementation safely.
+
+Do not ask me to approve ordinary technical implementation decisions.
+
+Make reasonable engineering decisions and document them.
+
+ASK ME ONLY when a decision genuinely requires personal or external information that cannot safely be inferred, such as:
+- Cloud provider selection when deployment to a particular cloud is required.
+- A paid LLM provider/API account.
+- Organization-specific access policies.
+- Real production credentials.
+
+Use configurable provider abstractions and local development defaults so implementation can continue without paid credentials.
+
+---
+
+# 27. QUALITY GATES
+
+The application is not complete merely because the code compiles.
+
+Before declaring completion:
+
+1. Build the backend.
+2. Run backend unit tests.
+3. Run backend integration tests.
+4. Build the frontend.
+5. Run frontend tests.
+6. Start Docker Compose.
+7. Verify PostgreSQL and pgvector.
+8. Verify Redis.
+9. Verify RabbitMQ.
+10. Verify database migrations.
+11. Register and authenticate a test user.
+12. Upload a real sample document.
+13. Verify ingestion status.
+14. Verify embeddings are persisted.
+15. Ask a question about the uploaded document.
+16. Verify answer correctness and citations.
+17. Ask a question absent from the document.
+18. Verify the abstention response.
+19. Test restricted document access with a second user.
+20. Verify unauthorized retrieval is impossible.
+21. Test conversation history.
+22. Test document deletion and version replacement.
+23. Verify monitoring endpoints.
+24. Verify data persistence after restart.
+
+Fix all discovered blocking issues.
+
+If an external API key is unavailable, test the integration boundary with a deterministic local fake provider and clearly document that live-provider execution remains unverified.
+
+Never report a test as passed unless it was actually executed successfully.
+
+---
+
+# 28. FINAL DELIVERABLES
+
+At completion, deliver:
+
+1. Complete backend source code.
+2. Complete frontend source code.
+3. PostgreSQL schema and migrations.
+4. Complete RAG pipeline.
+5. Authentication and authorization.
+6. Document ingestion pipeline.
+7. Vector search implementation.
+8. LLM integration.
+9. Admin dashboard.
+10. Employee chatbot UI.
+11. Docker Compose infrastructure.
+12. Automated tests.
+13. Monitoring configuration.
+14. API documentation.
+15. Architecture documentation.
+16. Complete README.
+17. Environment configuration template.
+18. Sample documents and demo data without sensitive information.
+19. Actual test execution report.
+20. Known limitations and future improvements.
+
+Also produce a truthful resume-ready project description with five strong technical bullet points based only on implemented and verified functionality.
+
+---
+
+# 29. NON-NEGOTIABLE ENGINEERING PRINCIPLES
+
+- No hardcoded credentials.
+- No fake successful API responses.
+- No hardcoded dashboard metrics.
+- No fabricated citations.
+- No unauthorized vector retrieval.
+- No plaintext passwords.
+- No insecure JWT implementation.
+- No silent exception swallowing.
+- No unnecessary duplicated code.
+- No giant controller classes.
+- No business logic inside controllers.
+- No unvalidated external inputs.
+- No destructive database operations without safeguards.
+- No untested claims.
+- No incomplete placeholder implementations presented as finished features.
+
+Use SOLID principles, clean code, meaningful naming, DTO separation, constructor injection, centralized exception handling, transactions and appropriate design patterns.
+
+Optimize for correctness and maintainability before premature performance optimization.
+
+# FINAL COMMAND
+
+BUILD THE COMPLETE KNOWLEDGEASSIST APPLICATION.
+
+Start by inspecting the current working directory. If it is empty, create the complete project. If an existing project is present, inspect and preserve it before modifying anything.
+
+Make the necessary architectural decisions, generate the actual source files, implement the functionality, run the tests, fix errors and verify the application.
+
+Do not respond with only an architecture, roadmap or tutorial.
+
+I expect an actual working full-stack project with a Java Spring Boot backend, React frontend, PostgreSQL pgvector database, secure authentication, functional RAG pipeline, document authorization, citations, Docker deployment and automated tests.
+
+**Continue implementation until the project is complete or a genuine external dependency prevents further progress. Report exactly what works, what was tested and what remains incomplete.**
